@@ -7,22 +7,44 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register necessary services
-builder.Services.AddEndpointsApiExplorer(); // Needed for minimal API
-builder.Services.AddSwaggerGen();           // Swagger support
-builder.Services.AddAuthorization();        // For UseAuthorization middleware
+builder.Services.AddEndpointsApiExplorer(); 
+builder.Services.AddSwaggerGen();           
+builder.Services.AddAuthorization();      
 
 var app = builder.Build();
 
-// Use middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseAuthorization();
 
-app.UseAuthorization(); // No auth logic yet — just scaffolded
+var devices = new List<Device>();
 
-// app.MapGet(...);  <-- You'll add endpoints here later
+app.MapPost("/devices/smartwatch", (Smartwatch sw) =>
+{
+    devices.Add(sw);
+    return Results.Ok(sw);
+});
+
+app.MapPost("/devices/embedded", (Embedded ed) =>
+{
+    devices.Add(ed);
+    return Results.Ok(ed);
+});
+
+app.MapPost("/devices/pc", (PersonalComputer pc) =>
+{
+    devices.Add(pc);
+    return Results.Ok(pc);
+});
+
+
+
+
+
+
+
 
 app.Run();

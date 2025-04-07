@@ -2,7 +2,7 @@ using DeviceAPI.Exceptions;
 
 namespace DeviceAPI;
 
-class Smartwatch : Device
+public class Smartwatch : Device
 {
     private int _batteryLevel;
 

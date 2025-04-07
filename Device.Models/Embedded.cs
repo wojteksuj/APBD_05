@@ -3,7 +3,7 @@ using DeviceAPI.Exceptions;
 
 namespace DeviceAPI;
 
-class Embedded : Device
+public class Embedded : Device
 {
     public string NetworkName { get; set; }
     private string _ipAddress;

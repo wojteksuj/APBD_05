@@ -2,7 +2,7 @@ using DeviceAPI.Exceptions;
 
 namespace DeviceAPI;
 
-class PersonalComputer : Device
+public class PersonalComputer : Device
 {
     public string? OperatingSystem { get; set; }
     
