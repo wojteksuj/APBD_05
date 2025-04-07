@@ -40,6 +40,17 @@ app.MapPost("/devices/pc", (PersonalComputer pc) =>
     return Results.Ok(pc);
 });
 
+app.MapGet("/devices", () =>
+{
+    return Results.Ok(devices);
+});
+
+app.MapGet("/devices/{id}", (String id) =>
+{
+    var device = devices.FirstOrDefault(d => d.Id == id);
+    return device != null ? Results.Ok(device) : Results.NotFound();
+});
+
 
 
 
