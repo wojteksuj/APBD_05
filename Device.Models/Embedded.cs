@@ -7,7 +7,7 @@ public class Embedded : Device
 {
     public string NetworkName { get; set; }
     private string _ipAddress;
-    private bool _isConnected = false;
+    private bool _isConnected { get; set; }
 
     public string IpAddress
     {
@@ -30,7 +30,7 @@ public class Embedded : Device
         {
             throw new ArgumentException("Invalid ID value. Required format: E-1", id);
         }
-
+        _isConnected = false;
         IpAddress = ipAddress;
         NetworkName = networkName;
     }

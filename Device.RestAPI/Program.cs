@@ -60,9 +60,70 @@ app.MapDelete("devices/delete/{id}", (String id) =>
     return Results.Ok();
 });
 
+app.MapPut("devices/smartwatch/update", (Smartwatch editSw) =>
+{
+    var targetIndex = -1;
+    for (var i = 0; i < devices.Count; i++)
+    {
+        var device = devices[i];
+        if (device.Id.Equals(editSw.Id))
+        {
+            targetIndex = i;
+            break;
+        }
+    }
+    if (targetIndex == -1) return Results.NotFound();
 
+    if (devices[targetIndex] is Smartwatch)
+    {
+        devices[targetIndex] = editSw;
+    }
+    else return Results.NotFound();
+    return Results.Ok(editSw);
+});
 
+app.MapPut("devices/pc/update", (PersonalComputer editPc) =>
+{
+    var targetIndex = -1;
+    for (var i = 0; i < devices.Count; i++)
+    {
+        var device = devices[i];
+        if (device.Id.Equals(editPc.Id))
+        {
+            targetIndex = i;
+            break;
+        }
+    }
+    if (targetIndex == -1) return Results.NotFound();
 
+    if (devices[targetIndex] is Smartwatch)
+    {
+        devices[targetIndex] = editPc;
+    }
+    else return Results.NotFound();
+    return Results.Ok(editPc);
+});
 
+app.MapPut("devices/embedded/update", (Embedded editEd) =>
+{
+    var targetIndex = -1;
+    for (var i = 0; i < devices.Count; i++)
+    {
+        var device = devices[i];
+        if (device.Id.Equals(editEd.Id))
+        {
+            targetIndex = i;
+            break;
+        }
+    }
+    if (targetIndex == -1) return Results.NotFound();
+
+    if (devices[targetIndex] is Smartwatch)
+    {
+        devices[targetIndex] = editEd;
+    }
+    else return Results.NotFound();
+    return Results.Ok(editEd);
+});
 
 app.Run();
