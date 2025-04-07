@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using DeviceAPI;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -51,7 +52,13 @@ app.MapGet("/devices/{id}", (String id) =>
     return device != null ? Results.Ok(device) : Results.NotFound();
 });
 
-
+app.MapDelete("devices/delete/{id}", (String id) =>
+{
+    var device = devices.FirstOrDefault(d => d.Id == id);
+    if (device == null) return Results.NotFound();
+    devices.Remove(device);
+    return Results.Ok();
+});
 
 
 
