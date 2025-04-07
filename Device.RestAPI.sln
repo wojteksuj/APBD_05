@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APBD_05", "APBD_05\APBD_05.csproj", "{1E9F162E-1B19-4C30-9988-EE9DA27C396B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device.RestAPI", "Device.RestAPI\Device.RestAPI.csproj", "{1E9F162E-1B19-4C30-9988-EE9DA27C396B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device.Models", "Device.Models\Device.Models.csproj", "{649E181A-C7D1-464E-918A-9AD111C4538B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +14,9 @@ Global
 		{1E9F162E-1B19-4C30-9988-EE9DA27C396B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E9F162E-1B19-4C30-9988-EE9DA27C396B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E9F162E-1B19-4C30-9988-EE9DA27C396B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{649E181A-C7D1-464E-918A-9AD111C4538B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{649E181A-C7D1-464E-918A-9AD111C4538B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{649E181A-C7D1-464E-918A-9AD111C4538B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{649E181A-C7D1-464E-918A-9AD111C4538B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
