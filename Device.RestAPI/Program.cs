@@ -62,68 +62,43 @@ app.MapDelete("devices/delete/{id}", (String id) =>
 
 app.MapPut("devices/smartwatch/update", (Smartwatch editSw) =>
 {
-    var targetIndex = -1;
-    for (var i = 0; i < devices.Count; i++)
+    var existingDevice = devices.FirstOrDefault(d => d.Id == editSw.Id);
+    if (existingDevice is Smartwatch sw)
     {
-        var device = devices[i];
-        if (device.Id.Equals(editSw.Id))
-        {
-            targetIndex = i;
-            break;
-        }
+        sw.Name = editSw.Name;
+        sw.IsEnabled = editSw.IsEnabled;
+        sw.BatteryLevel = editSw.BatteryLevel;
+        return Results.Ok();
     }
-    if (targetIndex == -1) return Results.NotFound();
-
-    if (devices[targetIndex] is Smartwatch)
-    {
-        devices[targetIndex] = editSw;
-    }
-    else return Results.NotFound();
-    return Results.Ok(editSw);
+    return Results.NotFound();
 });
 
 app.MapPut("devices/pc/update", (PersonalComputer editPc) =>
 {
-    var targetIndex = -1;
-    for (var i = 0; i < devices.Count; i++)
+    var existingDevice = devices.FirstOrDefault(d => d.Id == editPc.Id);
+    if (existingDevice is PersonalComputer pc)
     {
-        var device = devices[i];
-        if (device.Id.Equals(editPc.Id))
-        {
-            targetIndex = i;
-            break;
-        }
+        pc.Name = editPc.Name;
+        pc.IsEnabled = editPc.IsEnabled;
+        pc.OperatingSystem = editPc.OperatingSystem;
+        return Results.Ok();
     }
-    if (targetIndex == -1) return Results.NotFound();
-
-    if (devices[targetIndex] is Smartwatch)
-    {
-        devices[targetIndex] = editPc;
-    }
-    else return Results.NotFound();
-    return Results.Ok(editPc);
+    return Results.NotFound();
 });
 
 app.MapPut("devices/embedded/update", (Embedded editEd) =>
 {
-    var targetIndex = -1;
-    for (var i = 0; i < devices.Count; i++)
+    var existingDevice = devices.FirstOrDefault(d => d.Id == editEd.Id);
+    if (existingDevice is Embedded ed)
     {
-        var device = devices[i];
-        if (device.Id.Equals(editEd.Id))
-        {
-            targetIndex = i;
-            break;
-        }
+        ed.Name = editEd.Name;
+        ed.IsEnabled = editEd.IsEnabled;
+        ed.IpAddress = editEd.IpAddress;
+        ed.NetworkName = editEd.NetworkName;
+        return Results.Ok();
     }
-    if (targetIndex == -1) return Results.NotFound();
-
-    if (devices[targetIndex] is Smartwatch)
-    {
-        devices[targetIndex] = editEd;
-    }
-    else return Results.NotFound();
-    return Results.Ok(editEd);
+    return Results.NotFound();
 });
+
 
 app.Run();
