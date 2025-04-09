@@ -21,53 +21,51 @@ if (app.Environment.IsDevelopment())
 }
 app.UseAuthorization();
 
-var devices = new List<Device>();
+var deviceManager = new DeviceManager();
 
 app.MapPost("/devices/smartwatch", (Smartwatch sw) =>
 {
-    devices.Add(sw);
+    deviceManager.AddDevice(sw);
     return Results.Ok(sw);
 });
 
 app.MapPost("/devices/embedded", (Embedded ed) =>
 {
-    devices.Add(ed);
+    deviceManager.AddDevice(ed);
     return Results.Ok(ed);
 });
 
 app.MapPost("/devices/pc", (PersonalComputer pc) =>
 {
-    devices.Add(pc);
+    deviceManager.AddDevice(pc);
     return Results.Ok(pc);
 });
 
 app.MapGet("/devices", () =>
 {
-    return Results.Ok(devices);
+    return Results.Ok(deviceManager.ShowAllDevices());
 });
 
 app.MapGet("/devices/{id}", (String id) =>
 {
-    var device = devices.FirstOrDefault(d => d.Id == id);
+    var device = deviceManager.GetDeviceById(id);
     return device != null ? Results.Ok(device) : Results.NotFound();
 });
 
 app.MapDelete("devices/delete/{id}", (String id) =>
 {
-    var device = devices.FirstOrDefault(d => d.Id == id);
+    var device = deviceManager.GetDeviceById(id);
     if (device == null) return Results.NotFound();
-    devices.Remove(device);
+    deviceManager.RemoveDeviceById(id);
     return Results.Ok();
 });
 
 app.MapPut("devices/smartwatch/update", (Smartwatch editSw) =>
 {
-    var existingDevice = devices.FirstOrDefault(d => d.Id == editSw.Id);
-    if (existingDevice is Smartwatch sw)
+    var existingDevice = deviceManager.GetDeviceById(editSw.Id);
+    if (existingDevice is Smartwatch)
     {
-        sw.Name = editSw.Name;
-        sw.IsEnabled = editSw.IsEnabled;
-        sw.BatteryLevel = editSw.BatteryLevel;
+        deviceManager.EditDevice(editSw);
         return Results.Ok();
     }
     return Results.NotFound();
@@ -75,12 +73,10 @@ app.MapPut("devices/smartwatch/update", (Smartwatch editSw) =>
 
 app.MapPut("devices/pc/update", (PersonalComputer editPc) =>
 {
-    var existingDevice = devices.FirstOrDefault(d => d.Id == editPc.Id);
-    if (existingDevice is PersonalComputer pc)
+    var existingDevice = deviceManager.GetDeviceById(editPc.Id);
+    if (existingDevice is PersonalComputer)
     {
-        pc.Name = editPc.Name;
-        pc.IsEnabled = editPc.IsEnabled;
-        pc.OperatingSystem = editPc.OperatingSystem;
+        deviceManager.EditDevice(editPc);
         return Results.Ok();
     }
     return Results.NotFound();
@@ -88,13 +84,10 @@ app.MapPut("devices/pc/update", (PersonalComputer editPc) =>
 
 app.MapPut("devices/embedded/update", (Embedded editEd) =>
 {
-    var existingDevice = devices.FirstOrDefault(d => d.Id == editEd.Id);
-    if (existingDevice is Embedded ed)
+    var existingDevice = deviceManager.GetDeviceById(editEd.Id);
+    if (existingDevice is Embedded)
     {
-        ed.Name = editEd.Name;
-        ed.IsEnabled = editEd.IsEnabled;
-        ed.IpAddress = editEd.IpAddress;
-        ed.NetworkName = editEd.NetworkName;
+        deviceManager.EditDevice(editEd);
         return Results.Ok();
     }
     return Results.NotFound();
