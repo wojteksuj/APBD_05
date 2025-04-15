@@ -1,10 +1,5 @@
-using System.Security.Cryptography;
-using DeviceAPI;
-using Microsoft.AspNetCore.Http.HttpResults;
 
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using DeviceAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
