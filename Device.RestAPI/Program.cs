@@ -60,9 +60,9 @@ app.MapDelete("devices/delete/{id}", (String id) =>
     return Results.Ok();
 });
 
-app.MapPut("devices/smartwatch/update", (Smartwatch editSw) =>
+app.MapPut("devices/smartwatch/{id}", (String id, Smartwatch editSw) =>
 {
-    var existingDevice = deviceManager.GetDeviceById(editSw.Id);
+    var existingDevice = deviceManager.GetDeviceById(id);
     if (existingDevice is Smartwatch)
     {
         deviceManager.EditDevice(editSw);
@@ -71,9 +71,9 @@ app.MapPut("devices/smartwatch/update", (Smartwatch editSw) =>
     return Results.NotFound();
 });
 
-app.MapPut("devices/pc/update", (PersonalComputer editPc) =>
+app.MapPut("devices/pc/{id}", (String id, PersonalComputer editPc) =>
 {
-    var existingDevice = deviceManager.GetDeviceById(editPc.Id);
+    var existingDevice = deviceManager.GetDeviceById(id);
     if (existingDevice is PersonalComputer)
     {
         deviceManager.EditDevice(editPc);
@@ -82,9 +82,9 @@ app.MapPut("devices/pc/update", (PersonalComputer editPc) =>
     return Results.NotFound();
 });
 
-app.MapPut("devices/embedded/update", (Embedded editEd) =>
+app.MapPut("devices/embedded/{id}", (String id, Embedded editEd) =>
 {
-    var existingDevice = deviceManager.GetDeviceById(editEd.Id);
+    var existingDevice = deviceManager.GetDeviceById(id);
     if (existingDevice is Embedded)
     {
         deviceManager.EditDevice(editEd);
