@@ -1,6 +1,6 @@
 namespace DeviceAPI;
 
-public abstract class Device
+public class Device
 {
     public string Id { get; set; }
     public string Name { get; set; }
@@ -11,6 +11,11 @@ public abstract class Device
         Id = id;
         Name = name;
         IsEnabled = isEnabled;
+    }
+
+    public Device()
+    {
+        throw new NotImplementedException();
     }
 
     public virtual void TurnOn()

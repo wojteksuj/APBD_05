@@ -4,7 +4,7 @@ namespace DeviceAPI;
 
 public class DeviceManager
 {
-    private string _inputDeviceFile;
+    
     private const int MaxCapacity = 15;
     public static List<Device> devices = new(capacity: MaxCapacity);
 

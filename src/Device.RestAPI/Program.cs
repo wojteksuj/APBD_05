@@ -1,7 +1,7 @@
-
 using DeviceAPI;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("UniversityDatabase");
 
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen();           
@@ -17,6 +17,16 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 var deviceManager = new DeviceManager();
+var deviceService = new DeviceService(connectionString);
+
+
+app.MapGet("/api/devices", () =>
+{
+    return Results.Ok(deviceService.GetAllDevices());
+});
+
+
+
 
 app.MapPost("/devices/smartwatches", (Smartwatch sw) =>
 {
@@ -34,11 +44,6 @@ app.MapPost("/devices/pcs", (PersonalComputer pc) =>
 {
     deviceManager.AddDevice(pc);
     return Results.Ok(pc);
-});
-
-app.MapGet("/devices", () =>
-{
-    return Results.Ok(deviceManager.ShowAllDevices());
 });
 
 app.MapGet("/devices/{id}", (String id) =>
