@@ -2,11 +2,11 @@ namespace DeviceAPI;
 
 public class Device
 {
-    public string Id { get; set; }
+    public string? Id { get; set; }
     public string Name { get; set; }
     public bool IsEnabled { get; set; }
 
-    public Device(string id, string name, bool isEnabled)
+    public Device(string? id, string name, bool isEnabled)
     {
         Id = id;
         Name = name;

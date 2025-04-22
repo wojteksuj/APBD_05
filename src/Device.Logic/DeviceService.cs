@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 using DeviceAPI;
 
@@ -87,46 +88,58 @@ public class DeviceService : IDeviceService
         using SqlConnection connection = new SqlConnection(_connectionString);
         connection.Open();
 
-        const string query = "SELECT * FROM Devices WHERE Id = @Id";
-        using SqlCommand command = new SqlCommand(query, connection);
+        const string queryString = "SELECT * FROM Devices WHERE Id = @Id";
+        using SqlCommand command = new SqlCommand(queryString, connection);
         command.Parameters.AddWithValue("@Id", id);
 
         using SqlDataReader reader = command.ExecuteReader();
 
-        string type = reader["Type"].ToString();
+        string type = reader.GetString(0);
 
         Device? device = type switch
         {
             "Smartwatch" => new Smartwatch
             {
-                Id = reader["Id"].ToString(),
-                Name = reader["Name"].ToString(),
-                IsEnabled = (bool)reader["IsEnabled"],
-                BatteryLevel = (int)reader["BatteryLevel"]
+                Id = reader.GetString(0),
+                Name = reader.GetString(1),
+                IsEnabled = reader.GetBoolean(2),
+                BatteryLevel = reader.GetInt32(3)
             },
 
             "PersonalComputer" => new PersonalComputer
             {
-                Id = reader["Id"].ToString(),
-                Name = reader["Name"].ToString(),
-                IsEnabled = (bool)reader["IsEnabled"],
-                OperatingSystem = reader["OperatingSystem"].ToString()
+                Id = reader.GetString(0),
+                Name = reader.GetString(1),
+                IsEnabled = reader.GetBoolean(2),
+                OperatingSystem = reader.GetString(3)
             },
 
             "EmbeddedDevice" => new Embedded
             {
-                Id = reader["Id"].ToString(),
-                Name = reader["Name"].ToString(),
-                IsEnabled = (bool)reader["IsEnabled"],
-                IpAddress = reader["IpAddress"].ToString(),
-                NetworkName = reader["NetworkName"].ToString(),
-                IsConnected = (bool)reader["IsConnected"]
+                Id = reader.GetString(0),
+                Name = reader.GetString(1),
+                IsEnabled = reader.GetBoolean(2),
+                IpAddress = reader.GetString(3),
+                NetworkName = reader.GetString(4),
+                IsConnected = reader.GetBoolean(5)
             }
         };
-
+        
         return device;
     }
-    
+
+    public bool RemoveDevice(string id)
+    {
+        const string queryString = "DELETE FROM Devices WHERE Id = @Id";
+        using SqlConnection connection = new SqlConnection(_connectionString);
+        connection.Open();
+
+        using SqlCommand command = new SqlCommand(queryString, connection);
+        command.Parameters.AddWithValue("@Id", id);
+
+        int rowsDeleted = command.ExecuteNonQuery();
+        return rowsDeleted != -1;
+    }
     
     
     

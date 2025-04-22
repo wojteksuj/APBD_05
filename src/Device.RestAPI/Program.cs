@@ -91,6 +91,12 @@ app.MapGet("/api/devices/{id}", (string id, IDeviceService service) =>
     return Results.Ok(device);
 });
 
+app.MapDelete("/api/devices/{id}", (string id, IDeviceService service) =>
+{
+    bool deleted = service.RemoveDevice(id);
+    return deleted ? Results.Ok() : Results.NotFound();
+});
+
 
 
 

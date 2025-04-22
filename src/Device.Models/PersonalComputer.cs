@@ -6,7 +6,7 @@ public class PersonalComputer : Device
 {
     public string? OperatingSystem { get; set; }
     
-    public PersonalComputer(string id, string name, bool isEnabled, string? operatingSystem) : base(id, name, isEnabled)
+    public PersonalComputer(string? id, string name, bool isEnabled, string? operatingSystem) : base(id, name, isEnabled)
     {
         if (!CheckId(id))
         {
@@ -38,5 +38,5 @@ public class PersonalComputer : Device
         return $"PC {Name} ({Id}) is {enabledStatus} and {osStatus}";
     }
 
-    private bool CheckId(string id) => id.Contains("P-");
+    private bool CheckId(string? id) => id.Contains("P-");
 }

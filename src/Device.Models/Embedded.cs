@@ -24,7 +24,7 @@ public class Embedded : Device
         }
     }
     
-    public Embedded(string id, string name, bool isEnabled, string ipAddress, string networkName) : base(id, name, isEnabled)
+    public Embedded(string? id, string name, bool isEnabled, string ipAddress, string networkName) : base(id, name, isEnabled)
     {
         if (CheckId(id))
         {
@@ -70,5 +70,5 @@ public class Embedded : Device
         }
     }
     
-    private bool CheckId(string id) => id.Contains("E-");
+    private bool CheckId(string? id) => id.Contains("E-");
 }

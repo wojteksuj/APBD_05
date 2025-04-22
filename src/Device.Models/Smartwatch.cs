@@ -19,7 +19,7 @@ public class Smartwatch : Device
         }
     }
     
-    public Smartwatch(string id, string name, bool isEnabled, int batteryLevel) : base(id, name, isEnabled)
+    public Smartwatch(string? id, string name, bool isEnabled, int batteryLevel) : base(id, name, isEnabled)
     {
         if (CheckId(id))
         {
@@ -51,5 +51,5 @@ public class Smartwatch : Device
         return $"Smartwatch {Name} ({Id}) is {enabledStatus} and has {BatteryLevel}%";
     }
     
-    private bool CheckId(string id) => id.Contains("E-");
+    private bool CheckId(string? id) => id.Contains("E-");
 }
