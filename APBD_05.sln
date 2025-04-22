@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device.RestAPI", "Device.Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device.Models", "Device.Models\Device.Models.csproj", "{649E181A-C7D1-464E-918A-9AD111C4538B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device.Logic", "Device.Logic\Device.Logic.csproj", "{497F9C66-0502-4DF9-A3D2-23E24D624E53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,10 @@ Global
 		{649E181A-C7D1-464E-918A-9AD111C4538B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{649E181A-C7D1-464E-918A-9AD111C4538B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{649E181A-C7D1-464E-918A-9AD111C4538B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{497F9C66-0502-4DF9-A3D2-23E24D624E53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{497F9C66-0502-4DF9-A3D2-23E24D624E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{497F9C66-0502-4DF9-A3D2-23E24D624E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{497F9C66-0502-4DF9-A3D2-23E24D624E53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
