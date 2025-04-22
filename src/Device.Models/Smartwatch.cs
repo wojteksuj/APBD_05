@@ -16,10 +16,6 @@ public class Smartwatch : Device
             }
             
             _batteryLevel = value;
-            if (_batteryLevel < 20)
-            {
-                Notify();
-            }
         }
     }
     
