@@ -2,6 +2,11 @@ using DeviceAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("UniversityDatabase");
+if (!string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine("Can connect to database, wrong connection string");
+}
+builder.Services.AddSingleton<IDeviceService, DeviceService>(deviceService => new DeviceService(connectionString));
 
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen();           
@@ -17,12 +22,19 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 var deviceManager = new DeviceManager();
-var deviceService = new DeviceService(connectionString);
 
 
-app.MapGet("/api/devices", () =>
+app.MapGet("/api/devices", (IDeviceService deviceService) =>
 {
-    return Results.Ok(deviceService.GetAllDevices());
+    try
+    {
+        return Results.Ok(deviceService.GetAllDevices());
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+    
 });
 
 
