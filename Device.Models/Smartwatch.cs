@@ -31,11 +31,7 @@ public class Smartwatch : Device
         }
         BatteryLevel = batteryLevel;
     }
-
-    public void Notify()
-    {
-        Console.WriteLine($"Battery level is low. Current level is: {BatteryLevel}");
-    }
+    
 
     public override void TurnOn()
     {
@@ -46,11 +42,6 @@ public class Smartwatch : Device
 
         base.TurnOn();
         BatteryLevel -= 10;
-
-        if (BatteryLevel < 20)
-        {
-            Notify();
-        }
     }
 
     public override string ToString()
