@@ -78,3 +78,6 @@ NUGET_BACKUP/
 .idea/**/tasks.xml
 .idea/**/shelf
 .idea/**/workspace.xml
+
+# Ignore configuration files
+appsettings.*
