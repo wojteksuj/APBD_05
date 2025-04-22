@@ -7,7 +7,7 @@ public class Embedded : Device
 {
     public string NetworkName { get; set; }
     private string _ipAddress;
-    private bool _isConnected { get; set; }
+    public bool IsConnected { get; set; }
 
     public string IpAddress
     {
@@ -30,7 +30,7 @@ public class Embedded : Device
         {
             throw new ArgumentException("Invalid ID value. Required format: E-1", id);
         }
-        _isConnected = false;
+        IsConnected = false;
         IpAddress = ipAddress;
         NetworkName = networkName;
     }
@@ -43,7 +43,7 @@ public class Embedded : Device
 
     public override void TurnOff()
     {
-        _isConnected = false;
+        IsConnected = false;
         base.TurnOff();
     }
 
@@ -57,7 +57,7 @@ public class Embedded : Device
     {
         if (NetworkName.Contains("MD Ltd."))
         {
-            _isConnected = true;
+            IsConnected = true;
         }
         else
         {
