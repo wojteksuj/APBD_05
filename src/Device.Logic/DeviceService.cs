@@ -1,7 +1,7 @@
 using Microsoft.Data.SqlClient;
 using DeviceAPI;
 
-public class DeviceService
+public class DeviceService : IDeviceService
 {
     private string _connectionString;
 
@@ -10,9 +10,9 @@ public class DeviceService
         _connectionString = connectionString;
     }
 
-    public IEnumerable<DeviceAPI.Device> GetAllDevices()
+    public IEnumerable<Device> GetAllDevices()
     {
-        List<DeviceAPI.Device> devices = [];
+        List<Device> devices = [];
         const string queryString = "SELECT * FROM Devices";
 
         using (SqlConnection connection = new SqlConnection(_connectionString))
