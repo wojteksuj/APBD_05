@@ -141,6 +141,44 @@ public class DeviceService : IDeviceService
         return rowsDeleted != -1;
     }
     
-    
+    public bool UpdateDevice(Device device)
+    {
+        using SqlConnection connection = new SqlConnection(_connectionString);
+        connection.Open();
+
+        string queryString = "";
+        using SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+        
+        command.Parameters.AddWithValue("@Id", device.Id);
+        command.Parameters.AddWithValue("@Name", device.Name);
+        command.Parameters.AddWithValue("@IsEnabled", device.IsEnabled);
+        command.Parameters.AddWithValue("@Type", device.GetType().Name);
+
+        switch (device)
+        {
+            case Smartwatch sw:
+                queryString = "UPDATE Devices SET Name = @Name, IsEnabled = @IsEnabled, Type = @Type, BatteryLevel = @BatteryLevel WHERE Id = @Id";
+                command.Parameters.AddWithValue("@BatteryLevel", sw.BatteryLevel);
+                break;
+
+            case PersonalComputer pc:
+                queryString = "UPDATE Devices SET Name = @Name, IsEnabled = @IsEnabled, Type = @Type, OperatingSystem = @OperatingSystem WHERE Id = @Id";
+                command.Parameters.AddWithValue("@OperatingSystem", pc.OperatingSystem);
+                break;
+
+            case Embedded ed:
+                queryString = "UPDATE Devices SET Name = @Name, IsEnabled = @IsEnabled, Type = @Type, NetworkName = @NetworkName, IpAddress = @IpAddress, IsConnected = @IsConnected WHERE Id = @Id";
+                command.Parameters.AddWithValue("@NetworkName", ed.NetworkName);
+                command.Parameters.AddWithValue("@IpAddress", ed.IpAddress);
+                command.Parameters.AddWithValue("@IsConnected", ed.IsConnected);
+                break;
+        }
+
+        command.CommandText = queryString;
+        int rowsUpdated = command.ExecuteNonQuery();
+        return rowsUpdated != -1;
+    }
+
     
 }

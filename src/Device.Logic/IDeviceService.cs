@@ -6,4 +6,5 @@ public interface IDeviceService
     bool AddDevice(Device device);
     Device GetDeviceById(string deviceId);
     bool RemoveDevice(string deviceId);
+    bool UpdateDevice(Device device);
 }

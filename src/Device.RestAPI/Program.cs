@@ -97,55 +97,33 @@ app.MapDelete("/api/devices/{id}", (string id, IDeviceService service) =>
     return deleted ? Results.Ok() : Results.NotFound();
 });
 
-
-
-
-
-
-
-
-
-
-app.MapDelete("devices/delete/{id}", (String id) =>
+app.MapPut("/api/devices/{id}", async (string id, HttpRequest request, IDeviceService service) =>
 {
-    var device = deviceManager.GetDeviceById(id);
-    if (device == null) return Results.NotFound();
-    deviceManager.RemoveDeviceById(id);
-    return Results.Ok();
-});
+    using var reader = new StreamReader(request.Body);
+    string rawJson = await reader.ReadToEndAsync();
+    var json = JsonNode.Parse(rawJson);
+    if (json is null) return Results.BadRequest("Invalid JSON file!!!");
 
-app.MapPut("devices/smartwatches/{id}", (String id, Smartwatch editSw) =>
-{
-    var existingDevice = deviceManager.GetDeviceById(id);
-    if (existingDevice is Smartwatch)
+    var type = json["type"]?.ToString()?.ToLower();
+    
+    var options = new JsonSerializerOptions
     {
-        deviceManager.EditDevice(editSw);
-        return Results.Ok();
-    }
+        PropertyNameCaseInsensitive = true
+    };
+
+    Device? device = type switch
+    {
+        "smartwatch"      => JsonSerializer.Deserialize<Smartwatch>(rawJson, options),
+        "personalcomputer"=> JsonSerializer.Deserialize<PersonalComputer>(rawJson, options),
+        "embeddeddevice"  => JsonSerializer.Deserialize<Embedded>(rawJson, options)
+    };
+
+    if (device is null || device.Id != id)
+        return Results.BadRequest("Invalid device data!!!");
+
+    bool updated = service.UpdateDevice(device);
+    if(updated) return Results.Ok();
     return Results.NotFound();
 });
-
-app.MapPut("devices/pcs/{id}", (String id, PersonalComputer editPc) =>
-{
-    var existingDevice = deviceManager.GetDeviceById(id);
-    if (existingDevice is PersonalComputer)
-    {
-        deviceManager.EditDevice(editPc);
-        return Results.Ok();
-    }
-    return Results.NotFound();
-});
-
-app.MapPut("devices/embeddeddevices/{id}", (String id, Embedded editEd) =>
-{
-    var existingDevice = deviceManager.GetDeviceById(id);
-    if (existingDevice is Embedded)
-    {
-        deviceManager.EditDevice(editEd);
-        return Results.Ok();
-    }
-    return Results.NotFound();
-});
-
 
 app.Run();
