@@ -27,7 +27,12 @@ public class Smartwatch : Device
         }
         BatteryLevel = batteryLevel;
     }
-    
+
+    public Smartwatch()
+    {
+        throw new NotImplementedException();
+    }
+
 
     public override void TurnOn()
     {

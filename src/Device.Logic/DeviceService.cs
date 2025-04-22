@@ -81,6 +81,52 @@ public class DeviceService : IDeviceService
         var addedRows = command.ExecuteNonQuery();
         return addedRows != -1;
     }
+
+    public Device? GetDeviceById(string id)
+    {
+        using SqlConnection connection = new SqlConnection(_connectionString);
+        connection.Open();
+
+        const string query = "SELECT * FROM Devices WHERE Id = @Id";
+        using SqlCommand command = new SqlCommand(query, connection);
+        command.Parameters.AddWithValue("@Id", id);
+
+        using SqlDataReader reader = command.ExecuteReader();
+
+        string type = reader["Type"].ToString();
+
+        Device? device = type switch
+        {
+            "Smartwatch" => new Smartwatch
+            {
+                Id = reader["Id"].ToString(),
+                Name = reader["Name"].ToString(),
+                IsEnabled = (bool)reader["IsEnabled"],
+                BatteryLevel = (int)reader["BatteryLevel"]
+            },
+
+            "PersonalComputer" => new PersonalComputer
+            {
+                Id = reader["Id"].ToString(),
+                Name = reader["Name"].ToString(),
+                IsEnabled = (bool)reader["IsEnabled"],
+                OperatingSystem = reader["OperatingSystem"].ToString()
+            },
+
+            "EmbeddedDevice" => new Embedded
+            {
+                Id = reader["Id"].ToString(),
+                Name = reader["Name"].ToString(),
+                IsEnabled = (bool)reader["IsEnabled"],
+                IpAddress = reader["IpAddress"].ToString(),
+                NetworkName = reader["NetworkName"].ToString(),
+                IsConnected = (bool)reader["IsConnected"]
+            }
+        };
+
+        return device;
+    }
+    
     
     
     

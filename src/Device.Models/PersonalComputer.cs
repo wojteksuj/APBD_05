@@ -16,6 +16,11 @@ public class PersonalComputer : Device
         OperatingSystem = operatingSystem;
     }
 
+    public PersonalComputer()
+    {
+        throw new NotImplementedException();
+    }
+
     public override void TurnOn()
     {
         if (OperatingSystem is null)

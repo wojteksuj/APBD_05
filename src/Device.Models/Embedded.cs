@@ -35,6 +35,11 @@ public class Embedded : Device
         NetworkName = networkName;
     }
 
+    public Embedded()
+    {
+        throw new NotImplementedException();
+    }
+
     public override void TurnOn()
     {
         Connect();

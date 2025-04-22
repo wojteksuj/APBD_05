@@ -85,14 +85,20 @@ app.MapPost("/api/devices", async (IDeviceService deviceService, HttpRequest req
     })
     .Accepts<string>("application/json", ["text/plain"]);
 
-
-
-
-app.MapGet("/devices/{id}", (String id) =>
+app.MapGet("/api/devices/{id}", (string id, IDeviceService service) =>
 {
-    var device = deviceManager.GetDeviceById(id);
-    return device != null ? Results.Ok(device) : Results.NotFound();
+    var device = service.GetDeviceById(id);
+    return Results.Ok(device);
 });
+
+
+
+
+
+
+
+
+
 
 app.MapDelete("devices/delete/{id}", (String id) =>
 {
