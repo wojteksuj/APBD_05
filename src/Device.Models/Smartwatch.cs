@@ -29,9 +29,7 @@ public class Smartwatch : Device
     }
 
     public Smartwatch()
-    {
-        throw new NotImplementedException();
-    }
+    {}
 
 
     public override void TurnOn()

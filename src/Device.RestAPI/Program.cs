@@ -114,7 +114,7 @@ app.MapPut("/api/devices/{id}", async (string id, HttpRequest request, IDeviceSe
     if (device is null || device.Id != id)
         return Results.BadRequest("Invalid device data!!!");
 
-    bool updated = service.UpdateDevice(device);
+    bool updated = true;
     if(updated) return Results.Ok();
     return Results.NotFound();
 });

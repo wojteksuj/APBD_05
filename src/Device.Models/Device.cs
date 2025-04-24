@@ -14,9 +14,7 @@ public class Device
     }
 
     public Device()
-    {
-        throw new NotImplementedException();
-    }
+    {}
 
     public virtual void TurnOn()
     {

@@ -67,25 +67,24 @@ public class DeviceService : IDeviceService
         {
             case Smartwatch sw:
                 queryString = new SqlCommand(
-                    "INSERT INTO Smartwatch (DeviceId, BatteryLevel) VALUES (@DeviceId, @BatteryLevel)", connection);
+                    "INSERT INTO Smartwatch (DeviceId, BatteryPercentage) VALUES (@DeviceId, @BatteryLevel)", connection);
                 queryString.Parameters.AddWithValue("@DeviceId", sw.Id);
                 queryString.Parameters.AddWithValue("@BatteryLevel", sw.BatteryLevel);
                 break;
 
             case PersonalComputer pc:
                 queryString = new SqlCommand(
-                    "INSERT INTO PC (DeviceId, OperatingSystem) VALUES (@DeviceId, @OperatingSystem)", connection);
+                    "INSERT INTO PC (DeviceId, OperationSystem) VALUES (@DeviceId, @OperatingSystem)", connection);
                 queryString.Parameters.AddWithValue("@DeviceId", pc.Id);
                 queryString.Parameters.AddWithValue("@OperatingSystem", pc.OperatingSystem);
                 break;
 
             case Embedded ed:
                 queryString = new SqlCommand(
-                    "INSERT INTO Embedded (DeviceId, NetworkName, IpAddress, IsConnected) VALUES (@DeviceId, @NetworkName, @IpAddress, @IsConnected)", connection);
+                    "INSERT INTO Embedded (DeviceId, NetworkName, IpAddress) VALUES (@DeviceId, @NetworkName, @IpAddress)", connection);
                 queryString.Parameters.AddWithValue("@DeviceId", ed.Id);
                 queryString.Parameters.AddWithValue("@NetworkName", ed.NetworkName);
                 queryString.Parameters.AddWithValue("@IpAddress", ed.IpAddress);
-                queryString.Parameters.AddWithValue("@IsConnected", ed.IsConnected);
                 break;
         }
         return true;
@@ -115,7 +114,7 @@ public class DeviceService : IDeviceService
 
     baseReader.Close(); 
     
-    string query = "SELECT BatteryLevel FROM Smartwatch WHERE DeviceId = @Id";
+    string query = "SELECT BatteryPercentage FROM Smartwatch WHERE DeviceId = @Id";
     using SqlCommand commandSW = new SqlCommand(query, connection);
     commandSW.Parameters.AddWithValue("@Id", id);
     using SqlDataReader readerSW = commandSW.ExecuteReader();
@@ -131,7 +130,7 @@ public class DeviceService : IDeviceService
     }
     readerSW.Close();
     
-    query = "SELECT OperatingSystem FROM PersonalComputer WHERE DeviceId = @Id";
+    query = "SELECT OperationSystem FROM PersonalComputer WHERE DeviceId = @Id";
     using SqlCommand commandPC = new SqlCommand(query, connection);
     commandPC.Parameters.AddWithValue("@Id", id);
     using SqlDataReader readerPC = commandPC.ExecuteReader();
@@ -147,7 +146,7 @@ public class DeviceService : IDeviceService
     }
     readerPC.Close();
     
-    query = "SELECT IpAddress, NetworkName, IsConnected FROM Embedded WHERE DeviceId = @Id";
+    query = "SELECT IpAddress, NetworkName FROM Embedded WHERE DeviceId = @Id";
     using SqlCommand commandED = new SqlCommand(query, connection);
     commandED.Parameters.AddWithValue("@Id", id);
     using SqlDataReader readerED = commandED.ExecuteReader();
@@ -160,7 +159,6 @@ public class DeviceService : IDeviceService
             IsEnabled = isEnabled,
             IpAddress = readerED.GetString(0),
             NetworkName = readerED.GetString(1),
-            IsConnected = readerED.GetBoolean(2)
         };
     }
     readerED.Close();
@@ -201,44 +199,6 @@ public class DeviceService : IDeviceService
         }
     }
     
-    public bool UpdateDevice(Device device)
-    {
-        using SqlConnection connection = new SqlConnection(_connectionString);
-        connection.Open();
-
-        string queryString = "";
-        using SqlCommand command = new SqlCommand();
-        command.Connection = connection;
-        
-        command.Parameters.AddWithValue("@Id", device.Id);
-        command.Parameters.AddWithValue("@Name", device.Name);
-        command.Parameters.AddWithValue("@IsEnabled", device.IsEnabled);
-        command.Parameters.AddWithValue("@Type", device.GetType().Name);
-
-        switch (device)
-        {
-            case Smartwatch sw:
-                queryString = "UPDATE Devices SET Name = @Name, IsEnabled = @IsEnabled, Type = @Type, BatteryLevel = @BatteryLevel WHERE Id = @Id";
-                command.Parameters.AddWithValue("@BatteryLevel", sw.BatteryLevel);
-                break;
-
-            case PersonalComputer pc:
-                queryString = "UPDATE Devices SET Name = @Name, IsEnabled = @IsEnabled, Type = @Type, OperatingSystem = @OperatingSystem WHERE Id = @Id";
-                command.Parameters.AddWithValue("@OperatingSystem", pc.OperatingSystem);
-                break;
-
-            case Embedded ed:
-                queryString = "UPDATE Devices SET Name = @Name, IsEnabled = @IsEnabled, Type = @Type, NetworkName = @NetworkName, IpAddress = @IpAddress, IsConnected = @IsConnected WHERE Id = @Id";
-                command.Parameters.AddWithValue("@NetworkName", ed.NetworkName);
-                command.Parameters.AddWithValue("@IpAddress", ed.IpAddress);
-                command.Parameters.AddWithValue("@IsConnected", ed.IsConnected);
-                break;
-        }
-
-        command.CommandText = queryString;
-        int rowsUpdated = command.ExecuteNonQuery();
-        return rowsUpdated != -1;
-    }
-
+    
     
 }

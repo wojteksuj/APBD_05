@@ -36,9 +36,7 @@ public class Embedded : Device
     }
 
     public Embedded()
-    {
-        throw new NotImplementedException();
-    }
+    {}
 
     public override void TurnOn()
     {

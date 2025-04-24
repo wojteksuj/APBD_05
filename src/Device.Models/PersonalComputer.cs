@@ -17,9 +17,7 @@ public class PersonalComputer : Device
     }
 
     public PersonalComputer()
-    {
-        throw new NotImplementedException();
-    }
+    {}
 
     public override void TurnOn()
     {
