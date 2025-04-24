@@ -80,6 +80,7 @@ app.MapPost("/api/devices", async (IDeviceService deviceService, HttpRequest req
 app.MapGet("/api/devices/{id}", (string id, IDeviceService service) =>
 {
     var device = service.GetDeviceById(id);
+    if(device is null) return Results.NotFound();
     return Results.Ok(device);
 });
 

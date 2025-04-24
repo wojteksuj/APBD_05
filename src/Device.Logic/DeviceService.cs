@@ -99,60 +99,106 @@ public class DeviceService : IDeviceService
 
     public Device? GetDeviceById(string id)
     {
-        using SqlConnection connection = new SqlConnection(_connectionString);
-        connection.Open();
+    using SqlConnection connection = new SqlConnection(_connectionString);
+    connection.Open();
+    
+    const string baseQuery = "SELECT Name, IsEnabled FROM Device WHERE Id = @Id";
+    using SqlCommand baseCommand = new SqlCommand(baseQuery, connection);
+    baseCommand.Parameters.AddWithValue("@Id", id);
 
-        const string queryString = "SELECT * FROM Device WHERE Id = @Id";
-        using SqlCommand command = new SqlCommand(queryString, connection);
-        command.Parameters.AddWithValue("@Id", id);
+    using SqlDataReader baseReader = baseCommand.ExecuteReader();
+    if (!baseReader.Read())
+        return null;
 
-        using SqlDataReader reader = command.ExecuteReader();
+    string name = baseReader.GetString(0);
+    bool isEnabled = baseReader.GetBoolean(1);
 
-        string type = reader.GetString(0);
-
-        Device? device = type switch
+    baseReader.Close(); 
+    
+    string query = "SELECT BatteryLevel FROM Smartwatch WHERE DeviceId = @Id";
+    using SqlCommand commandSW = new SqlCommand(query, connection);
+    commandSW.Parameters.AddWithValue("@Id", id);
+    using SqlDataReader readerSW = commandSW.ExecuteReader();
+    if (readerSW.Read())
+    {
+        return new Smartwatch
         {
-            "Smartwatch" => new Smartwatch
-            {
-                Id = reader.GetString(0),
-                Name = reader.GetString(1),
-                IsEnabled = reader.GetBoolean(2),
-                BatteryLevel = reader.GetInt32(3)
-            },
-
-            "PersonalComputer" => new PersonalComputer
-            {
-                Id = reader.GetString(0),
-                Name = reader.GetString(1),
-                IsEnabled = reader.GetBoolean(2),
-                OperatingSystem = reader.GetString(3)
-            },
-
-            "EmbeddedDevice" => new Embedded
-            {
-                Id = reader.GetString(0),
-                Name = reader.GetString(1),
-                IsEnabled = reader.GetBoolean(2),
-                IpAddress = reader.GetString(3),
-                NetworkName = reader.GetString(4),
-                IsConnected = reader.GetBoolean(5)
-            }
+            Id = id,
+            Name = name,
+            IsEnabled = isEnabled,
+            BatteryLevel = readerSW.GetInt32(0)
         };
-        
-        return device;
     }
+    readerSW.Close();
+    
+    query = "SELECT OperatingSystem FROM PersonalComputer WHERE DeviceId = @Id";
+    using SqlCommand commandPC = new SqlCommand(query, connection);
+    commandPC.Parameters.AddWithValue("@Id", id);
+    using SqlDataReader readerPC = commandPC.ExecuteReader();
+    if (readerPC.Read())
+    {
+        return new PersonalComputer
+        {
+            Id = id,
+            Name = name,
+            IsEnabled = isEnabled,
+            OperatingSystem = readerPC.GetString(0)
+        };
+    }
+    readerPC.Close();
+    
+    query = "SELECT IpAddress, NetworkName, IsConnected FROM Embedded WHERE DeviceId = @Id";
+    using SqlCommand commandED = new SqlCommand(query, connection);
+    commandED.Parameters.AddWithValue("@Id", id);
+    using SqlDataReader readerED = commandED.ExecuteReader();
+    if (readerED.Read())
+    {
+        return new Embedded
+        {
+            Id = id,
+            Name = name,
+            IsEnabled = isEnabled,
+            IpAddress = readerED.GetString(0),
+            NetworkName = readerED.GetString(1),
+            IsConnected = readerED.GetBoolean(2)
+        };
+    }
+    readerED.Close();
+
+    return null;
+}
 
     public bool RemoveDevice(string id)
     {
-        const string queryString = "DELETE FROM Devices WHERE Id = @Id";
         using SqlConnection connection = new SqlConnection(_connectionString);
         connection.Open();
+        try
+        {
+            // Step 1: Delete from subtype tables first
+            string[] deleteQueries = {
+                "DELETE FROM Smartwatch WHERE DeviceId = @Id",
+                "DELETE FROM PersonalComputer WHERE DeviceId = @Id",
+                "DELETE FROM Embedded WHERE DeviceId = @Id"
+            };
 
-        using SqlCommand command = new SqlCommand(queryString, connection);
-        command.Parameters.AddWithValue("@Id", id);
-
-        int rowsDeleted = command.ExecuteNonQuery();
-        return rowsDeleted != -1;
+            foreach (var query in deleteQueries)
+            {
+                using SqlCommand commandString = new SqlCommand(query, connection);
+                commandString.Parameters.AddWithValue("@Id", id);
+                commandString.ExecuteNonQuery();
+            }
+            
+            const string deleteQuery= "DELETE FROM Device WHERE Id = @Id";
+            using SqlCommand deviceCmd = new SqlCommand(deleteQuery, connection);
+            deviceCmd.Parameters.AddWithValue("@Id", id);
+            
+            int rowsDeleted = deviceCmd.ExecuteNonQuery();
+            return rowsDeleted > -1;
+        }
+        catch
+        {
+            return false;
+        }
     }
     
     public bool UpdateDevice(Device device)
