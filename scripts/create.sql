@@ -5,7 +5,7 @@ CREATE TABLE Device (
 );
 
 CREATE TABLE Embedded (
-                          Id INT PRIMARY KEY,
+                          Id INT IDENTITY PRIMARY KEY ,
                           IpAddress VARCHAR(255),
                           NetworkName VARCHAR(255),
                           DeviceId VARCHAR(255),
@@ -13,15 +13,18 @@ CREATE TABLE Embedded (
 );
 
 CREATE TABLE PersonalComputer (
-                                  Id INT PRIMARY KEY,
+                                  Id INT IDENTITY PRIMARY KEY,
                                   OperationSystem VARCHAR(255),
                                   DeviceId VARCHAR(255),
                                   FOREIGN KEY (DeviceId) REFERENCES Device(Id)
 );
 
 CREATE TABLE Smartwatch (
-                            Id INT PRIMARY KEY,
+                            Id INT IDENTITY PRIMARY KEY,
                             BatteryPercentage INT,
                             DeviceId VARCHAR(255),
                             FOREIGN KEY (DeviceId) REFERENCES Device(Id)
 );
+
+
+

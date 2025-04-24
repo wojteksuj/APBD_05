@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 using DeviceAPI;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("UniversityDatabase");
+var connectionString = builder.Configuration.GetConnectionString("MyDatabase");
 if (string.IsNullOrEmpty(connectionString))
 {
     Console.WriteLine("Can't connect to database, wrong connection string");
@@ -23,8 +23,6 @@ if (app.Environment.IsDevelopment())
 }
 app.UseAuthorization();
 
-var deviceManager = new DeviceManager();
-
 
 app.MapGet("/api/devices", (IDeviceService deviceService) =>
 {
@@ -42,48 +40,42 @@ app.MapGet("/api/devices", (IDeviceService deviceService) =>
 app.MapPost("/api/devices", async (IDeviceService deviceService, HttpRequest request) =>
     {
         string? contentType = request.ContentType?.ToLower();
+        
+        using var reader = new StreamReader(request.Body);
+        string rawJson = await reader.ReadToEndAsync();
 
-        switch (contentType)
+        var json = JsonNode.Parse(rawJson);
+        if (json is null)
+            return Results.BadRequest("Invalid JSON");
+
+        var type = json["type"]?.ToString()?.ToLower();
+        if (string.IsNullOrEmpty(type))
+            return Results.BadRequest("Missing 'type' field.");
+
+        var options = new JsonSerializerOptions
         {
-            case "application/json":
-            {
-                using var reader = new StreamReader(request.Body);
-                string rawJson = await reader.ReadToEndAsync();
+            PropertyNameCaseInsensitive = true
+        };
 
-                var json = JsonNode.Parse(rawJson);
-                if (json is null) return Results.BadRequest("Invalid JSON");
+        Device? device = type switch
+        {
+            "smartwatch" => JsonSerializer.Deserialize<Smartwatch>(rawJson, options),
+            "pc"         => JsonSerializer.Deserialize<PersonalComputer>(rawJson, options),
+            "embedded"   => JsonSerializer.Deserialize<Embedded>(rawJson, options),
+            _            => null
+        };
 
-                var type = json["type"]?.ToString()?.ToLower();
-                if (string.IsNullOrEmpty(type))
-                    return Results.BadRequest("Missing 'type' field.");
+        if (device is null)
+            return Results.BadRequest();
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
+        bool success = deviceService.AddDevice(device);
+        if (!success)
+            return Results.Problem();
 
-                Device? device = type switch
-                {
-                    "smartwatch" => JsonSerializer.Deserialize<Smartwatch>(rawJson, options),
-                    "pc"         => JsonSerializer.Deserialize<PersonalComputer>(rawJson, options),
-                    "embedded"   => JsonSerializer.Deserialize<Embedded>(rawJson, options)
-                };
-
-                if (device is null)
-                    return Results.BadRequest($"Unsupported device type: {type}");
-
-                deviceService.AddDevice(device); 
-                return Results.Created($"/api/devices/{device.Id}", device);
-            }
-
-            case "text/plain":
-                return Results.Ok();
-
-            default:
-                return Results.Conflict();
-        }
+        return Results.Created();
     })
     .Accepts<string>("application/json", ["text/plain"]);
+
 
 app.MapGet("/api/devices/{id}", (string id, IDeviceService service) =>
 {
