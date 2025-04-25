@@ -39,7 +39,6 @@ app.MapGet("/api/devices", (IDeviceService deviceService) =>
 
 app.MapPost("/api/devices", async (IDeviceService deviceService, HttpRequest request) =>
     {
-        string? contentType = request.ContentType?.ToLower();
         
         using var reader = new StreamReader(request.Body);
         string rawJson = await reader.ReadToEndAsync();
@@ -74,7 +73,7 @@ app.MapPost("/api/devices", async (IDeviceService deviceService, HttpRequest req
 
         return Results.Created();
     })
-    .Accepts<string>("application/json", ["text/plain"]);
+    .Accepts<string>("application/json");
 
 
 app.MapGet("/api/devices/{id}", (string id, IDeviceService service) =>
@@ -106,15 +105,16 @@ app.MapPut("/api/devices/{id}", async (string id, HttpRequest request, IDeviceSe
 
     Device? device = type switch
     {
-        "smartwatch"      => JsonSerializer.Deserialize<Smartwatch>(rawJson, options),
-        "personalcomputer"=> JsonSerializer.Deserialize<PersonalComputer>(rawJson, options),
-        "embeddeddevice"  => JsonSerializer.Deserialize<Embedded>(rawJson, options)
+        "smartwatch" => JsonSerializer.Deserialize<Smartwatch>(rawJson, options),
+        "pc"         => JsonSerializer.Deserialize<PersonalComputer>(rawJson, options),
+        "embedded"   => JsonSerializer.Deserialize<Embedded>(rawJson, options),
+        _            => null
     };
 
     if (device is null || device.Id != id)
         return Results.BadRequest("Invalid device data!!!");
 
-    bool updated = true;
+    bool updated = service.UpdateDevice(device);
     if(updated) return Results.Ok();
     return Results.NotFound();
 });
