@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace DeviceAPI;
 using DeviceAPI;
@@ -114,46 +115,54 @@ public class DeviceRepository : IDeviceRepository
 
         return null;}
 
-    public bool Add(Device device) {using SqlConnection connection = new SqlConnection(_connectionString);
+    public bool Add(Device device)
+    {
+        using SqlConnection connection = new SqlConnection(_connectionString);
         connection.Open();
 
         try
         {
-            SqlCommand? queryString = null;
+            SqlCommand command = new();
+            command.Connection = connection;
+            command.CommandType = CommandType.StoredProcedure;
 
             switch (device)
             {
                 case Smartwatch sw:
-                    queryString = new SqlCommand(
-                        "INSERT INTO Smartwatch (DeviceId, BatteryPercentage) VALUES (@DeviceId, @BatteryLevel)",
-                        connection);
-                    queryString.Parameters.AddWithValue("@DeviceId", sw.Id);
-                    queryString.Parameters.AddWithValue("@BatteryLevel", sw.BatteryLevel);
+                    command.CommandText = "AddSmartwatch";
+                    command.Parameters.AddWithValue("@DeviceId", sw.Id);
+                    command.Parameters.AddWithValue("@Name", sw.Name);
+                    command.Parameters.AddWithValue("@IsEnabled", sw.IsEnabled);
+                    command.Parameters.AddWithValue("@BatteryPercentage", sw.BatteryLevel);
                     break;
 
                 case PersonalComputer pc:
-                    queryString = new SqlCommand(
-                        "INSERT INTO PC (DeviceId, OperationSystem) VALUES (@DeviceId, @OperatingSystem)", connection);
-                    queryString.Parameters.AddWithValue("@DeviceId", pc.Id);
-                    queryString.Parameters.AddWithValue("@OperatingSystem", pc.OperatingSystem);
+                    command.CommandText = "AddPC";
+                    command.Parameters.AddWithValue("@DeviceId", pc.Id);
+                    command.Parameters.AddWithValue("@Name", pc.Name);
+                    command.Parameters.AddWithValue("@IsEnabled", pc.IsEnabled);
+                    command.Parameters.AddWithValue("@OperationSystem", pc.OperatingSystem);
                     break;
 
                 case Embedded ed:
-                    queryString = new SqlCommand(
-                        "INSERT INTO Embedded (DeviceId, NetworkName, IpAddress) VALUES (@DeviceId, @NetworkName, @IpAddress)",
-                        connection);
-                    queryString.Parameters.AddWithValue("@DeviceId", ed.Id);
-                    queryString.Parameters.AddWithValue("@NetworkName", ed.NetworkName);
-                    queryString.Parameters.AddWithValue("@IpAddress", ed.IpAddress);
+                    command.CommandText = "AddEmbedded";
+                    command.Parameters.AddWithValue("@DeviceId", ed.Id);
+                    command.Parameters.AddWithValue("@Name", ed.Name);
+                    command.Parameters.AddWithValue("@IsEnabled", ed.IsEnabled);
+                    command.Parameters.AddWithValue("@IpAddress", ed.IpAddress);
+                    command.Parameters.AddWithValue("@NetworkName", ed.NetworkName);
                     break;
+
+                default:
+                    return false;
             }
 
             return true;
-        }
-        catch
+        } catch (Exception ex)
         {
             return false;
-        }}
+        }
+    }
 
     public bool Update(Device device) {using SqlConnection connection = new SqlConnection(_connectionString);
         connection.Open();
