@@ -8,7 +8,10 @@ if (string.IsNullOrEmpty(connectionString))
 {
     Console.WriteLine("Can't connect to database, wrong connection string");
 }
-builder.Services.AddSingleton<IDeviceService, DeviceService>(deviceService => new DeviceService(connectionString));
+
+builder.Services.AddSingleton<IDeviceRepository>(_ => new DeviceRepository(connectionString));
+builder.Services.AddSingleton<IDeviceService, DeviceService>();
+
 
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen();           

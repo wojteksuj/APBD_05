@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device.Models", "src\Device
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device.Logic", "src\Device.Logic\Device.Logic.csproj", "{497F9C66-0502-4DF9-A3D2-23E24D624E53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device.Repository", "Device.Repository\Device.Repository.csproj", "{241147AE-F948-4C2F-A349-F3153386E59D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{497F9C66-0502-4DF9-A3D2-23E24D624E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{497F9C66-0502-4DF9-A3D2-23E24D624E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{497F9C66-0502-4DF9-A3D2-23E24D624E53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{241147AE-F948-4C2F-A349-F3153386E59D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{241147AE-F948-4C2F-A349-F3153386E59D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{241147AE-F948-4C2F-A349-F3153386E59D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{241147AE-F948-4C2F-A349-F3153386E59D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
