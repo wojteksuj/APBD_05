@@ -119,12 +119,16 @@ public class DeviceRepository : IDeviceRepository
     {
         using SqlConnection connection = new SqlConnection(_connectionString);
         connection.Open();
+        using SqlTransaction transaction = connection.BeginTransaction();
 
         try
         {
-            SqlCommand command = new();
-            command.Connection = connection;
-            command.CommandType = CommandType.StoredProcedure;
+            SqlCommand command = new()
+            {
+                Connection = connection,
+                Transaction = transaction,
+                CommandType = CommandType.StoredProcedure
+            };
 
             switch (device)
             {
@@ -157,16 +161,21 @@ public class DeviceRepository : IDeviceRepository
                     return false;
             }
 
+            command.ExecuteNonQuery();
+            transaction.Commit();
             return true;
-        } catch (Exception ex)
+        }
+        catch
         {
+            transaction.Rollback();
             return false;
         }
     }
 
+
     public bool Update(Device device) {using SqlConnection connection = new SqlConnection(_connectionString);
         connection.Open();
-
+        using SqlTransaction transaction = connection.BeginTransaction();
         try
         {
             using (SqlCommand deviceCommand = new SqlCommand(
@@ -218,16 +227,18 @@ public class DeviceRepository : IDeviceRepository
 
                     break;
             }
-
+            transaction.Commit();
             return true;
         }
         catch (Exception ex)
-        {
+        {   
+            transaction.Rollback();
             return false;
         } }
 
     public bool Delete(string id) {using SqlConnection connection = new SqlConnection(_connectionString);
         connection.Open();
+        using SqlTransaction transaction = connection.BeginTransaction();
         try
         {
             string[] deleteQueries =
@@ -249,10 +260,12 @@ public class DeviceRepository : IDeviceRepository
             deviceCmd.Parameters.AddWithValue("@Id", id);
 
             int rowsDeleted = deviceCmd.ExecuteNonQuery();
+            transaction.Commit();
             return rowsDeleted > -1;
         }
         catch
-        {
+        {   
+            transaction.Rollback();
             return false;
         } }
 }
