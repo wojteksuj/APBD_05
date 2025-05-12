@@ -8,6 +8,7 @@ public class Embedded : Device
     public string NetworkName { get; set; }
     private string _ipAddress;
     public bool IsConnected { get; set; }
+    private int rowVersion {get;set;}
 
     public string IpAddress
     {
