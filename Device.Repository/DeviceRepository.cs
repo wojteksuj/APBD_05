@@ -177,7 +177,7 @@ public class DeviceRepository : IDeviceRepository
         connection.Open();
         using SqlTransaction transaction = connection.BeginTransaction();
         try
-        {
+        { 
             using (SqlCommand deviceCommand = new SqlCommand(
                        "UPDATE Device SET Name = @Name, IsEnabled = @IsEnabled WHERE Id = @Id", connection))
             {
@@ -200,7 +200,7 @@ public class DeviceRepository : IDeviceRepository
                     }
 
                     break;
-
+                
                 case PersonalComputer pc:
                     using (SqlCommand pcCommand = new SqlCommand(
                                "UPDATE PersonalComputer SET OperationSystem = @OperationSystem WHERE DeviceId = @DeviceId",
