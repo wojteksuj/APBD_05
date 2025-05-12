@@ -72,7 +72,8 @@ public class DeviceRepository : IDeviceRepository
                 Id = id,
                 Name = name,
                 IsEnabled = isEnabled,
-                BatteryLevel = readerSW.GetInt32(0)
+                BatteryLevel = readerSW.GetInt32(0),
+                RowVersion = readerSW.GetInt32(1)
             };
         }
 
@@ -89,7 +90,8 @@ public class DeviceRepository : IDeviceRepository
                 Id = id,
                 Name = name,
                 IsEnabled = isEnabled,
-                OperatingSystem = readerPC.GetString(0)
+                OperatingSystem = readerPC.GetString(0),
+                RowVersion = readerSW.GetInt32(1)
             };
         }
 
@@ -108,6 +110,7 @@ public class DeviceRepository : IDeviceRepository
                 IsEnabled = isEnabled,
                 IpAddress = readerED.GetString(0),
                 NetworkName = readerED.GetString(1),
+                RowVersion = readerSW.GetInt32(2)
             };
         }
 
@@ -179,11 +182,12 @@ public class DeviceRepository : IDeviceRepository
         try
         { 
             using (SqlCommand deviceCommand = new SqlCommand(
-                       "UPDATE Device SET Name = @Name, IsEnabled = @IsEnabled WHERE Id = @Id", connection))
+                       "UPDATE Device SET Name = @Name, IsEnabled = @IsEnabled WHERE Id = @Id and RowVer = @RowVersion", connection))
             {
                 deviceCommand.Parameters.AddWithValue("@Id", device.Id);
                 deviceCommand.Parameters.AddWithValue("@Name", device.Name);
                 deviceCommand.Parameters.AddWithValue("@IsEnabled", device.IsEnabled);
+                deviceCommand.Parameters.AddWithValue("@RowVersion", device.RowVersion);
                 deviceCommand.ExecuteNonQuery();
             }
 
@@ -191,11 +195,12 @@ public class DeviceRepository : IDeviceRepository
             {
                 case Smartwatch sw:
                     using (SqlCommand swCommand = new SqlCommand(
-                               "UPDATE Smartwatch SET BatteryPercentage = @BatteryPercentage WHERE DeviceId = @DeviceId",
+                               "UPDATE Smartwatch SET BatteryPercentage = @BatteryPercentage WHERE DeviceId = @DeviceId and RowVer = @RowVersion",
                                connection))
                     {
                         swCommand.Parameters.AddWithValue("@BatteryPercentage", sw.BatteryLevel);
                         swCommand.Parameters.AddWithValue("@DeviceId", sw.Id);
+                        swCommand.Parameters.AddWithValue("@RowVersion", sw.RowVersion);
                         swCommand.ExecuteNonQuery();
                     }
 
@@ -203,11 +208,12 @@ public class DeviceRepository : IDeviceRepository
                 
                 case PersonalComputer pc:
                     using (SqlCommand pcCommand = new SqlCommand(
-                               "UPDATE PersonalComputer SET OperationSystem = @OperationSystem WHERE DeviceId = @DeviceId",
+                               "UPDATE PersonalComputer SET OperationSystem = @OperationSystem WHERE DeviceId = @DeviceId and RowVer = @RowVersion",
                                connection))
                     {
                         pcCommand.Parameters.AddWithValue("@OperationSystem", pc.OperatingSystem);
                         pcCommand.Parameters.AddWithValue("@DeviceId", pc.Id);
+                        pcCommand.Parameters.AddWithValue("@RowVersion", pc.RowVersion);
                         pcCommand.ExecuteNonQuery();
                     }
 
@@ -215,13 +221,14 @@ public class DeviceRepository : IDeviceRepository
 
                 case Embedded ed:
                     using (SqlCommand edCommand = new SqlCommand(
-                               "UPDATE Embedded SET NetworkName = @NetworkName, IpAddress = @IpAddress, IsConnected = @IsConnected WHERE DeviceId = @DeviceId",
+                               "UPDATE Embedded SET NetworkName = @NetworkName, IpAddress = @IpAddress, IsConnected = @IsConnected WHERE DeviceId = @DeviceId and RowVer = @RowVersion",
                                connection))
                     {
                         edCommand.Parameters.AddWithValue("@NetworkName", ed.NetworkName);
                         edCommand.Parameters.AddWithValue("@IpAddress", ed.IpAddress);
                         edCommand.Parameters.AddWithValue("@IsConnected", ed.IsConnected);
                         edCommand.Parameters.AddWithValue("@DeviceId", ed.Id);
+                        edCommand.Parameters.AddWithValue("@RowVersion", ed.RowVersion);
                         edCommand.ExecuteNonQuery();
                     }
 

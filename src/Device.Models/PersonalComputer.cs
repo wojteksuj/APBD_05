@@ -5,7 +5,7 @@ namespace DeviceAPI;
 public class PersonalComputer : Device
 {
     public string? OperatingSystem { get; set; }
-    private int rowVersion {get;set;}
+    public int RowVersion {get;set;}
     
     public PersonalComputer(string? id, string name, bool isEnabled, string? operatingSystem) : base(id, name, isEnabled)
     {
