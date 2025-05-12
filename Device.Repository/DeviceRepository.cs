@@ -73,7 +73,7 @@ public class DeviceRepository : IDeviceRepository
                 Name = name,
                 IsEnabled = isEnabled,
                 BatteryLevel = readerSW.GetInt32(0),
-                RowVersion = readerSW.GetInt32(1)
+                RowVersion = readerSW.GetSqlBinary(1).Value
             };
         }
 
@@ -91,7 +91,7 @@ public class DeviceRepository : IDeviceRepository
                 Name = name,
                 IsEnabled = isEnabled,
                 OperatingSystem = readerPC.GetString(0),
-                RowVersion = readerSW.GetInt32(1)
+                RowVersion = readerSW.GetSqlBinary(1).Value
             };
         }
 
@@ -110,7 +110,7 @@ public class DeviceRepository : IDeviceRepository
                 IsEnabled = isEnabled,
                 IpAddress = readerED.GetString(0),
                 NetworkName = readerED.GetString(1),
-                RowVersion = readerSW.GetInt32(2)
+                RowVersion = readerSW.GetSqlBinary(2).Value
             };
         }
 

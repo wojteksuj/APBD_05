@@ -5,7 +5,7 @@ namespace DeviceAPI;
 public class Smartwatch : Device
 {
     private int _batteryLevel;
-    public int RowVersion {get;set;}
+    public byte[] RowVersion {get;set;}
     public int BatteryLevel
     {
         get => _batteryLevel;
